@@ -294,6 +294,13 @@ desc2x2=function(df,vFila,vCol,fila=2 ){
 
 
 
+#
+# Funciones para mostrar significaciones
+#
+
+
+
+
 asteriscos=function(y){
   sapply(y,function(x){
     resultado=""
@@ -333,3 +340,77 @@ pvalores=function(y){
     resultado
   })
 }
+
+
+
+
+
+###############################################
+# Funciones que a veces vienen bien
+
+saneaACENTOS=function(x){chartr("áâàèêéìîíòôóùûúüÁÀÂÈÊÉÌÍÎÒÓÔÚÜÛÙÛñÑºª","aaaeeeiiiooouuuuAAAEEEIIIOOOUUUUUnN..",x)}
+
+limpiaCaracteres=function(x){
+  if(is.null(x)) x=""
+  if(is.na(x)) x=""
+  x=chartr("áâàèêéìîíòôóùûúüÁÀÂÈÊÉÌÍÎÒÓÔÚÜÛÙÛñÑºª","aaaeeeiiiooouuuuAAAEEEIIIOOOUUUUUnN..",x)
+  x=str_replace_all(x,"'","")
+  x
+}
+
+
+clase=function(v){
+  resultado=class(v)
+  if(resultado=="factor") v=as.character(v)
+  if(resultado=="character" | resultado=="factor"){
+    v=str_trim(as.character(v),"both")
+    #Probar si es de verdad
+    relleno=(!is.na(v)) & v!=""
+    if(sum(relleno)==0){
+      resultado="vacio"
+    } else {#Probemos si son numeros
+      options(warn=-1)
+      numeros=!is.na(as.numeric(v))
+      options(warn=1)
+      if (sum(numeros|!relleno)==length(v)){
+        #Son numeros
+        resultado="numeric"
+      } else {#Probemos si son fechas
+        numFechas=sum(!is.na(str_extract(v[relleno],"^[1-2][0,1,9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]$")))
+        if(numFechas==sum(relleno)){
+          #Todo son fechas.
+          resultado="fecha"
+        }
+      }
+    }
+  }
+  resultado
+}
+
+
+esEntero=function(v){
+  resultado=FALSE
+  tipo=clase(v)
+  if(tipo=="numeric") {
+    v=as.numeric(v)
+    w=v[!is.na(v)]
+    if(all(w==as.integer(w))) resultado=TRUE
+  }
+  resultado
+}
+
+
+
+# INPUT
+rbindMioRestringido=function(dfA,dfB){
+  if(class(dfA)!="data.frame"| class (dfB)!="data.frame") stop("Solo vale con DataFrames");
+
+  faltaEnB=names(dfA)[!names(dfA) %in% names(dfB)]
+  if (length(faltaEnB)>0){
+    for (v in faltaEnB) dfB[,v]=""
+    dfB[,v]=as.character(dfB[,v])
+  }
+  dfB=dfB[,names(dfA)]
+  rbind(dfA,dfB)
+}
+
