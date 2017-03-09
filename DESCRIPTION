@@ -4,6 +4,6 @@ Title: Funciones para crear tablas de artículos
 Version: 0.1.0
 Author: Francisco Javier Baron Lopez
 Maintainer: Javier Baron <fjbaron@gmail.com>
-Description: More about what it does (maybe more than one line)
+Description: Ayuda a crear tablas
 License: What license is it under?
 LazyData: TRUE
