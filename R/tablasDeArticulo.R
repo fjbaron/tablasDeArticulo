@@ -291,3 +291,45 @@ desc2x2=function(df,vFila,vCol,fila=2 ){
   rownames(res)=NULL
   res
 }
+
+
+
+asteriscos=function(y){
+  sapply(y,function(x){
+    resultado=""
+    if(!is.na(x)){
+      if(x<0.10) resultado="."
+      if(x<0.05) resultado="*"
+      #      if(x<0.01) resultado="**"
+      #      if(x<0.001) resultado="***"
+    }
+    resultado
+  })
+}
+
+
+asteriscos2=function(y){
+  sapply(y,function(x){
+    resultado=""
+    if(!is.na(x)){
+      if(x<0.05) resultado="*"
+      if(x<0.01) resultado="**"
+      if(x<0.001) resultado="***"
+    }
+    resultado
+  })
+}
+
+pvalores=function(y){
+  sapply(y,function(x){
+    resultado="---"
+    if(!is.na(x)){
+      resultado="n.s."
+      if(is.numeric(x)){
+        if(x<1.15) resultado=sprintf("%1.3f%s",x,asteriscos(x))
+        if(x<0.001) resultado=sprintf("<0.001%s",asteriscos(x))
+      }
+    }
+    resultado
+  })
+}
