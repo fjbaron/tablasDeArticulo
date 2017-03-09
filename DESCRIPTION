@@ -1,7 +1,7 @@
 Package: tablasDeArticulo
 Type: Package
 Title: Funciones para crear tablas de artículos
-Version: 0.1.0
+Version: 0.1.1
 Author: Francisco Javier Baron Lopez
 Maintainer: Javier Baron <fjbaron@gmail.com>
 Description: Ayuda a crear tablas
