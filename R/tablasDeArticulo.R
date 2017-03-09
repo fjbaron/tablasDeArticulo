@@ -12,7 +12,7 @@
 #'
 #'@param df El data frame
 #'@param vNumericas El vector que contiene los nombres de las variables numéricas
-#'@param Puede consistir en repetir el vector vNumericas o bien unos textos que sustituyan el nombre
+#'@param traduccion Puede consistir en repetir el vector vNumericas o bien unos textos que sustituyan el nombre
 #'de cada variable en la tabla de resultado
 #'
 #' @return Una tabla con las columnas de descriptiva que se indiquen para cada variable numérica
