@@ -9,6 +9,16 @@
 #' Crea tabla de resumen descriptivo para variables numéricas
 #'
 #' Toma un data frame, una lista de noombres de variables numéricas, una traducción de los nombres de las variables a descripciones más
+#'
+#'@param df El data frame
+#'@param vNumericas El vector que contiene los nombres de las variables numéricas
+#'@param Puede consistir en repetir el vector vNumericas o bien unos textos que sustituyan el nombre
+#'de cada variable en la tabla de resultado
+#'
+#' @return Una tabla con las columnas de descriptiva que se indiquen para cada variable numérica
+#'
+#' @export
+#'
 generaTablaDescriptivaNumericas=function(df,vNumericas,traduccion,columnas=c("n","mediaet","gauss","rango","out3SD","out5SD")){
   listaLineas=lapply(vNumericas,function(vNum)desc1vn(df,vNum)[columnas])
   longitud=sapply(listaLineas,length)

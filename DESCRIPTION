@@ -7,3 +7,5 @@ Maintainer: Javier Baron <fjbaron@gmail.com>
 Description: Ayuda a crear tablas
 License: What license is it under?
 LazyData: TRUE
+RoxygenNote: 6.0.1
+Encoding: UTF-8
