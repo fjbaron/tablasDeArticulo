@@ -3,7 +3,7 @@ Type: Package
 Title: Funciones para crear tablas de artículos
 Version: 0.1.0
 Author: Francisco Javier Barón López
-Maintainer: person("Francisco Javier", "Baron Lopez", , "fjbaron@gmail.com", role = c("aut", "cre"))
+Maintainer: Javier Baron <fjbaron@gmail.com>
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
 LazyData: TRUE
