@@ -1,11 +1,11 @@
 Package: tablasDeArticulo
 Type: Package
 Title: Funciones para crear tablas de artículos
-Version: 0.1.1
+Version: 0.1.2
 Author: Francisco Javier Baron Lopez
 Maintainer: Javier Baron <fjbaron@gmail.com>
 Description: Ayuda a crear tablas
-License: What license is it under?
+License: GPLv3
 LazyData: TRUE
 RoxygenNote: 6.0.1
 Encoding: UTF-8
