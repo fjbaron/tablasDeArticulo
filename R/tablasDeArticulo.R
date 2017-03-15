@@ -46,6 +46,60 @@ generaTablaDescriptivaNumericasPorTiempo=function(df,TiempoFactor,vNumericas,tra
 
 
 
+
+
+
+
+generaTablatTestPorGrupo=function(df,vGrupo,vNumericas,traduccion,columnas=c("n","mediaet")){
+  names(traduccion)=vNumericas
+  tablaRes=Reduce(rbind,
+                  lapply(vNumericas,FUN=function(vNum)
+                    Reduce(cbind, append(lapply(
+                      split(df,df[,vGrupo]),
+                      FUN = function(dfGr){
+                        res=desc1vn(dfGr, vNum)[, columnas]
+                        names(res)=sprintf("%s.%s",names(res),as.character(dfGr[1,vGrupo]))
+                        res
+                      }
+                    ),#AQUI VA LA LISTA t-test
+                    list(descTtest(df,vNum,vGrupo)[,c("p.t","ci95")])
+                    )#Aquí termina t-test
+                    )
+                    %>% mutate(Variable=traduccion[vNum]) %>%
+                      select(Variable,everything())
+                  )
+  )
+  tablaRes
+}
+
+
+generaTablaANOVA1F=function(df,vGrupo,vNumericas,traduccion,columnas=c("n","mediaet")){
+  names(traduccion)=vNumericas
+  tablaRes=Reduce(rbind,
+                  lapply(vNumericas,FUN=function(vNum)
+                    Reduce(cbind, append(lapply(
+                      split(df,df[,vGrupo]),
+                      FUN = function(dfGr){
+                        res=desc1vn(dfGr, vNum)[, columnas]
+                        names(res)=sprintf("%s.%s",names(res),as.character(dfGr[1,vGrupo]))
+                        res
+                      }
+                    ),#AQUI VA LA LISTA t-test
+                    list(descAnova1F(df,vNum,vGrupo)[,c("p.F","p.kw")])
+                    )#Aquí termina t-test
+                    )
+                    %>% mutate(Variable=traduccion[vNum]) %>%
+                      select(Variable,everything())
+                  )
+  )
+  print(tablaRes)
+  tablaRes
+}
+
+
+
+
+
 generaTablatTestPorTiempoGrupo=function(df,TiempoFactor,vGrupo,vNumericas,traduccion,columnas=c("n","mediaet")){
   names(traduccion)=vNumericas
   tablaRes=Reduce(rbind,
@@ -62,7 +116,7 @@ generaTablatTestPorTiempoGrupo=function(df,TiempoFactor,vGrupo,vNumericas,traduc
                           }
                         ),#AQUI VA LA LISTA t-test
                         list(descTtest(dfTiempo,vNum,vGrupo)[,c("p.t","ci95")])
-                        )#Aquí termina t´test
+                        )#Aquí termina t-test
                         )
                     ))%>% mutate(Variable=traduccion[vNum],
                                  Tiempo=levels(dfLong[,TiempoFactor])) %>% select(Variable,Tiempo,everything())
@@ -120,8 +174,11 @@ generaTablaBinariasPorTiempoGrupo=function(df,TiempoFactor,vGrupo,vBinarias,trad
 desc1vn=function(df,vNum,formato="%1.1f±%1.1f",formatoIntervalo="%1.1f-%1.1f"){
   shapiro50="-"
   shapiro.p=1
-  datos=df[!is.na(df[,vNum]),vNum]
-  resultado=data.frame("Fallo"=1,"n"=0,"media"=NA,"mediasd"="", "mediadt"="","mediaet"="","medianaRI"="","rango"="","gauss"="","out3SD"=NA,"out5SD"=NA,"shapiro"="","p25"=NA,"p50"=NA,"p75"=NA,"p.intra"="")
+  resultado=data.frame("Fallo"=1,"n"=0,"media"=NA, "mediadt"="","mediaet"="","medianaRI"="","rango"="","gauss"="","out3SD"=NA,"out5SD"=NA,"shapiro"="","p25"=NA,"p50"=NA,"p75"=NA,"p.intra"="")
+  
+  try({
+    datos=df[!is.na(df[,vNum]),vNum]
+
 
   if(length(datos)>0){
     if(length(datos)>4){
@@ -161,12 +218,13 @@ desc1vn=function(df,vNum,formato="%1.1f±%1.1f",formatoIntervalo="%1.1f-%1.1f"){
       p.intra=pvalores(2*pt(abs(media/et),n-1,lower.tail = F))
     )
   }
+  })
   resultado
 }
 
 
 descTtest=function(df,vNum,vFac,formato="%1.2f"){
-  res=data.frame("Error"=1,p.t="-","t"="-","dif"="-","ci_min"=NA,"ci_max"=NA,"ci95"="-")
+  res=data.frame("Error"=1,"p.t"="-","t"="-","dif"="-","ci_min"=NA,"ci_max"=NA,"ci95"="-")
   try({
     modelo=t.test(formula(sprintf("%s ~ %s",vNum,vFac)),data=df)
     res=data.frame("p.t"=pvalores(modelo$p.value),
@@ -187,9 +245,9 @@ descAnova1F=function(df,vNum,vFac,formato="%1.2f"){
   shapiro50=shapiro.p=p.kw=NA
 
   laFormula=formula(sprintf("%s ~ %s",vNum,vFac))
+  try({
   modelo=summary(lm(laFormula,data=df))
   datos=modelo$residuals[!is.na(modelo$residuals)]
-
 
   if(length(datos)>0){
     if(length(datos)>4){
@@ -214,6 +272,9 @@ descAnova1F=function(df,vNum,vFac,formato="%1.2f"){
     res=data.frame("p.F"=pvalores(1-pf(modelo$fstatistic[1],modelo$fstatistic[2],modelo$fstatistic[3])),
                    "F"=round(modelo$fstatistic[1],2), "p.kw"=pvalores(p.kw),"gauss"=shapiro50,"shapiro"=pvalores(shapiro.p))
   })
+  
+  })
+  
   rownames(res)=NULL
   res
 }
