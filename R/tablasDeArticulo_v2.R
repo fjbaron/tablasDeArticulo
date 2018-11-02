@@ -26,6 +26,7 @@ library(apaTables)
 library(MBESS)
 library(effsize)
 
+#Solo una minimodificación para probar.
 #\u00B1 = ±
 desc1vn=function(df,vNum,formato="%1.2f\u00B1%1.2f",formatoIntervalo="%1.2f-%1.2f",columnas=NULL){
   shapiro50="-"
